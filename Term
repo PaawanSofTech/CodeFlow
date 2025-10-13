@@ -1,0 +1,56 @@
+Try it out locally
+
+Build:
+
+dotnet build
+
+
+Initialize repo:
+dotnet run --project CodeFlow.CLI -- init
+
+Generate keys:
+dotnet run --project CodeFlow.CLI -- keygen
+
+Add:
+dotnet run --project CodeFlow.CLI -- add
+
+Make a commit:
+dotnet run --project CodeFlow.CLI -- commit "Initial commit"
+
+
+View log:
+dotnet run --project CodeFlow.CLI -- log
+
+Versions:
+dotnet run --project CodeFlow.CLI -- checkout
+
+Restore:
+dotnet run --project CodeFlow.CLI -- checkout <Hash>
+
+Remote:
+dotnet run --project CodeFlow.CLI --remote add origin [http://127.0.0.1:9000](http://127.0.0.1:9000) my-project my-bucket minioadmin minioadmin123
+
+List:
+dotnet run --project CodeFlow.CLI --remote list
+
+Push:
+dotnet run --project CodeFlow.CLI --push origin
+
+Pull:
+dotnet run --project CodeFlow.CLI --pull origin
+
+Verify a commit:
+dotnet run --project CodeFlow.CLI -- verify <commit-hash>
+
+
+Roadmap of What We’re Building
+
+✅ CLI Base (done) – init, add, commit, checkout, log, verify.
+
+🚀 Large File Support – detect & offload to remote backend.
+
+🌐 Remote Repos – push/pull commits + objects between peers or cloud.
+
+🔒 Decentralization Layer – peer-to-peer sync (no single point of failure).
+
+🎯 Integration Layer – optional GitHub/Git compatibility for collab.
