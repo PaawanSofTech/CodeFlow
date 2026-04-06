@@ -1,0 +1,69 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
+
+namespace CodeFlow.Core
+{
+    public class RemoteConfig
+    {
+        public string Name { get; set; } = "origin"; // e.g., origin
+        public string Type { get; set; } = "cfs";    // cfs (our storage), later: s3, http, etc.
+        public string Url { get; set; } = "";       // e.g., http://localhost:5000
+        public string Repo { get; set; } = "";       // e.g., myteam/myproj
+        public string Bucket { get; set; }
+        public string AccessKey { get; set; }
+        public string SecretKey { get; set; }
+
+    }
+
+    public class RepoConfig
+    {
+        public List<RemoteConfig> Remotes { get; set; } = new();
+        public long LargeFileThresholdBytes { get; set; } = 100L * 1024L * 1024L; // 100 MiB default
+
+        private static readonly JsonSerializerOptions JsonOpts = new JsonSerializerOptions { WriteIndented = true };
+
+        public static string ConfigPath(string repoRoot) => Path.Combine(repoRoot, ".codeflow", "config.json");
+
+        public static RepoConfig Load(string repoRoot)
+        {
+            var path = ConfigPath(repoRoot);
+            if (!File.Exists(path)) return new RepoConfig();
+            var json = File.ReadAllText(path);
+            return JsonSerializer.Deserialize<RepoConfig>(json) ?? new RepoConfig();
+        }
+
+        public void Save(string repoRoot)
+        {
+            var path = ConfigPath(repoRoot);
+            Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+            var json = JsonSerializer.Serialize(this, JsonOpts);
+            File.WriteAllText(path, json);
+        }
+
+        public RemoteConfig? Get(string name) => Remotes.FirstOrDefault(r => string.Equals(r.Name, name, StringComparison.OrdinalIgnoreCase));
+        public RemoteConfig? Default => Get("origin") ?? Remotes.FirstOrDefault();
+
+        // CORRECTED CODE
+        public void AddOrUpdate(RemoteConfig rc)
+        {
+            var existing = Get(rc.Name);
+            if (existing != null)
+            {
+                existing.Type = rc.Type;
+                existing.Url = rc.Url;
+                existing.Repo = rc.Repo;
+                // The missing lines:
+                existing.Bucket = rc.Bucket;
+                existing.AccessKey = rc.AccessKey;
+                existing.SecretKey = rc.SecretKey;
+            }
+            else
+            {
+                Remotes.Add(rc);
+            }
+        }
+    }
+}

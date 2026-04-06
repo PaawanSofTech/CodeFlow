@@ -1,0 +1,104 @@
+# ---------------------------
+#  .flowignore for .NET repos
+# ---------------------------
+
+# Ignore build outputs
+bin/
+obj/
+out/
+publish/
+artifacts/
+
+# Ignore NuGet packages
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+
+# Ignore temp files
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# Ignore logs
+*.log
+logs/
+LogFiles/
+
+# Ignore user-specific files
+*.user
+*.userosscache
+*.suo
+*.cache
+*.pidb
+*.svclog
+*.pdb
+*.db
+*.sdf
+
+# VS-specific
+.vs/
+*.psess
+*.vsp
+*.vspx
+
+# Rider / JetBrains
+.idea/
+*.DotSettings.user
+
+# Ignore test results
+TestResult*/
+TestResults/
+*.coverage
+*.coveragexml
+
+# ASP.NET / Blazor specific
+wwwroot/lib/
+wwwroot/dist/
+node_modules/
+bundle/
+coverage/
+
+# Ignore generated assets
+*.dll
+*.exe
+*.mdb
+
+# Avoid ignoring important binaries in source folder:
+!src/**/*.dll
+!src/**/*.exe
+
+# Ignore environment files
+.env
+.env.*
+
+# Ignore Azure / Cloud artifacts
+*.publishsettings
+
+# Ignore secrets
+secrets.json
+appsettings.Development.json
+
+# Ignore OS cache files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Ignore everything in /build except a tracked file
+build/*
+!build/README.md
+
+# Ignore recursive build directories anywhere
+**/bin/
+**/obj/
+
+# Ignore CodeFlow internals (handled automatically, but safe to include)
+.codeflow/
+.git
+.git/
+**/.git/
+**/.git/**
+# Ignore Git repository
+.git/
+**/.git/

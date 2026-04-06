@@ -1,0 +1,23 @@
+{
+  "Remotes": [
+    {
+      "Name": "origin",
+      "Type": "cfs",
+      "Url": "http://127.0.0.1:9000",
+      "Repo": "my-project",
+      "Bucket": "my-bucket",
+      "AccessKey": "admin",
+      "SecretKey": "admin123"
+    }
+  ],
+  "LargeFileThresholdBytes": 104857600,
+  "Default": {
+    "Name": "origin",
+    "Type": "cfs",
+    "Url": "http://127.0.0.1:9000",
+    "Repo": "my-project",
+    "Bucket": "my-bucket",
+    "AccessKey": "admin",
+    "SecretKey": "admin123"
+  }
+}

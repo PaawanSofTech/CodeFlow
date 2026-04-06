@@ -1,0 +1,85 @@
+using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text;
+using CodeFlow.Crypto;
+
+namespace CodeFlow.Core
+{
+    public class Commit
+    {
+        // Payload fields (what we sign)
+        public string Message { get; set; }
+        public string Author { get; set; }
+        public DateTime Timestamp { get; set; }
+        public string ParentHash { get; set; }
+        public string[] Changes { get; set; }
+
+        // Signature metadata (filled after signing)
+        public string Signature { get; set; }           // Base64
+        public string PublicKey { get; set; }           // Base64 of raw public key
+        public string TreeHash { get; set; }
+        public string Hash { get; set; }
+
+        [JsonIgnore]
+        private static readonly JsonSerializerOptions _opts = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            WriteIndented = false,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        };
+
+        // Serialize only payload (exclude Signature & PublicKey) for canonical signing
+        public string PayloadJson()
+        {
+            var payload = new
+            {
+                message = this.Message,
+                author = this.Author,
+                timestamp = this.Timestamp.ToUniversalTime(),
+                parentHash = this.ParentHash,
+                treeHash = this.TreeHash,
+                changes = this.Changes
+            };
+            return JsonSerializer.Serialize(payload, _opts);
+        }
+
+        public string ToJson()
+        {
+            return JsonSerializer.Serialize(this, _opts);
+        }
+
+        public static Commit FromJson(string json)
+        {
+            return JsonSerializer.Deserialize<Commit>(json, _opts);
+        }
+
+        // Sign commit using provided private Key (NSec.Key). This sets Signature and PublicKey on the object.
+        public void SignWithKey(NSec.Cryptography.Key privateKey)
+        {
+            var payload = PayloadJson();
+            var bytes = Encoding.UTF8.GetBytes(payload);
+            var sig = CryptoUtils.Sign(privateKey, bytes);
+            var pubRaw = privateKey.PublicKey.Export(NSec.Cryptography.KeyBlobFormat.RawPublicKey);
+
+            Signature = Convert.ToBase64String(sig);
+            PublicKey = Convert.ToBase64String(pubRaw);
+        }
+
+
+        public bool VerifySignature()
+        {
+            if (string.IsNullOrEmpty(Signature) || string.IsNullOrEmpty(PublicKey))
+                return false;
+
+            var payload = PayloadJson();
+            var bytes = Encoding.UTF8.GetBytes(payload);
+            var sig = Convert.FromBase64String(Signature);
+            var pub = Convert.FromBase64String(PublicKey);
+
+            return CryptoUtils.Verify(pub, bytes, sig);
+        }
+
+    }
+    
+}

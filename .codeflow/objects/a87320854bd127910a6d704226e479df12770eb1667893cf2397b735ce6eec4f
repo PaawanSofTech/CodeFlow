@@ -1,0 +1,21 @@
+What’s Missing / Next Steps
+
+From the code skeleton, I can see a few TODOs:
+
+✅ Push is almost complete (parallel uploads, DAG traversal).
+
+🟡 Pull is incomplete → you need logic to:
+
+List/download remote objects.
+
+Save them into local CAS.
+
+Update .codeflow/HEAD.
+
+🟡 Branching/tags — currently only HEAD exists, no refs.
+
+🟡 Merge/Conflict resolution — no merge strategy yet.
+
+🟡 Networking beyond MinIO — later you might support gRPC, IPFS, or peer-to-peer sync.
+
+🟡 Better CLI UX — colored logs, diff viewer, etc.
